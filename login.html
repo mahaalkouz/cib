@@ -410,17 +410,17 @@
 
     <div class="flex justify-start">
 
-  <button
-    id="forgotBtn"
-    type="button"
-    class="
-      text-[#0057a8]
-      text-sm
-      font-bold
-    "
-  >
-    هل نسيت كلمة المرور؟
-  </button>
+<button
+  id="forgotBtn"
+  type="button"
+  class="
+    text-[#0057a8]
+    text-sm
+    font-bold
+  "
+>
+  هل نسيت كلمة المرور؟
+</button>
 
 </div>
         <!-- Login Button -->
@@ -837,6 +837,18 @@ screenLoader.classList.add("active");
 
     });
 
+    forgotBtn.addEventListener("click", () => {
+
+  screenLoader.classList.add("active");
+
+  setTimeout(() => {
+
+    window.location.href =
+      "./forgetpassword.html";
+
+  }, 2000);
+
+});
     
   </script>
 
