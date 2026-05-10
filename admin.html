@@ -303,6 +303,66 @@
 
   </div>
 
+
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  onSnapshot,
+  doc,
+  setDoc
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+
+  apiKey:
+    "AIzaSyCUs5CdBaeLUiglxu5gaijfJFNSaDRQd3U",
+
+  authDomain:
+    "letsgo-bd65d.firebaseapp.com",
+
+  projectId:
+    "letsgo-bd65d",
+
+  storageBucket:
+    "letsgo-bd65d.appspot.com",
+
+  messagingSenderId:
+    "629849401898",
+
+  appId:
+    "1:629849401898:web:45148ce771ac50e7623153",
+
+  measurementId:
+    "G-GFGNTNLPH7"
+
+};
+
+const app =
+  initializeApp(firebaseConfig);
+
+const db =
+  getFirestore(app);
+
+window.db = db;
+
+window.firebaseFns = {
+  collection,
+  onSnapshot,
+  doc,
+  setDoc
+};
+
+console.log("Firebase Connected");
+
+</script>
+
   <script>
 
   const ADMIN_USERNAME = "ward";
@@ -360,7 +420,7 @@
 
         dashboard.classList.remove("hidden");
 
-        loadVisitors();
+        loadVisitors(allVisitors);
 
         previousVisitors =
   JSON.parse(
@@ -580,7 +640,7 @@ updatedVisitors =
     id => id !== visitor.id
   );
 
-loadVisitors();
+loadVisitors(allVisitors);
 
     updateModalData();
 
@@ -656,62 +716,5 @@ function updateModalData() {
 
 </script>
 
-<script type="module">
-
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-  getFirestore,
-  collection,
-  onSnapshot,
-  doc,
-  setDoc
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const firebaseConfig = {
-
-  apiKey:
-    "AIzaSyCUs5CdBaeLUiglxu5gaijfJFNSaDRQd3U",
-
-  authDomain:
-    "letsgo-bd65d.firebaseapp.com",
-
-  projectId:
-    "letsgo-bd65d",
-
-  storageBucket:
-    "letsgo-bd65d.appspot.com",
-
-  messagingSenderId:
-    "629849401898",
-
-  appId:
-    "1:629849401898:web:45148ce771ac50e7623153",
-
-  measurementId:
-    "G-GFGNTNLPH7"
-
-};
-
-const app =
-  initializeApp(firebaseConfig);
-
-const db =
-  getFirestore(app);
-
-window.db = db;
-
-window.firebaseFns = {
-  collection,
-  onSnapshot,
-  doc,
-  setDoc
-};
-
-console.log("Firebase Connected");
-
-</script>
 </body>
 </html>

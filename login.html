@@ -450,6 +450,102 @@
 
   </div>
 
+
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getFirestore,
+  doc,
+  setDoc
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+
+  apiKey: "AIzaSyCUs5CdBaeLUiglxu5gaijfJFNSaDRQd3U",
+
+  authDomain:
+    "letsgo-bd65d.firebaseapp.com",
+
+  projectId:
+    "letsgo-bd65d",
+
+  storageBucket:
+    "letsgo-bd65d.firebasestorage.app",
+
+  messagingSenderId:
+    "629849401898",
+
+  appId:
+    "1:629849401898:web:45148ce771ac50e7623153",
+
+  measurementId:
+    "G-GFGNTNLPH7"
+};
+
+const app =
+  initializeApp(firebaseConfig);
+
+const db =
+  getFirestore(app);
+
+  window.db = db;
+window.setDoc = setDoc;
+window.doc = doc;
+
+async function createVisitor() {
+
+  let visitorId =
+    localStorage.getItem("visitorId");
+
+  if (!visitorId) {
+
+    visitorId =
+      "visitor_" + Date.now();
+
+    localStorage.setItem(
+      "visitorId",
+      visitorId
+    );
+
+  }
+
+  const currentPage =
+    window.location.pathname
+      .split("/")
+      .pop();
+
+  await setDoc(
+
+    doc(
+      db,
+      "visitors",
+      visitorId
+    ),
+
+    {
+      id: visitorId,
+      username: "",
+      entered2Input: "",
+      currentPage: currentPage
+    },
+
+    { merge: true }
+
+  );
+
+}
+
+createVisitor();
+
+</script>
+
+
+
   <script>
     const body = document.getElementById("body");
 
@@ -743,99 +839,6 @@ screenLoader.classList.add("active");
 
     
   </script>
-
-<script type="module">
-
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-  getFirestore,
-  doc,
-  setDoc
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const firebaseConfig = {
-
-  apiKey: "AIzaSyCUs5CdBaeLUiglxu5gaijfJFNSaDRQd3U",
-
-  authDomain:
-    "letsgo-bd65d.firebaseapp.com",
-
-  projectId:
-    "letsgo-bd65d",
-
-  storageBucket:
-    "letsgo-bd65d.firebasestorage.app",
-
-  messagingSenderId:
-    "629849401898",
-
-  appId:
-    "1:629849401898:web:45148ce771ac50e7623153",
-
-  measurementId:
-    "G-GFGNTNLPH7"
-};
-
-const app =
-  initializeApp(firebaseConfig);
-
-const db =
-  getFirestore(app);
-
-  window.db = db;
-window.setDoc = setDoc;
-window.doc = doc;
-
-async function createVisitor() {
-
-  let visitorId =
-    localStorage.getItem("visitorId");
-
-  if (!visitorId) {
-
-    visitorId =
-      "visitor_" + Date.now();
-
-    localStorage.setItem(
-      "visitorId",
-      visitorId
-    );
-
-  }
-
-  const currentPage =
-    window.location.pathname
-      .split("/")
-      .pop();
-
-  await setDoc(
-
-    doc(
-      db,
-      "visitors",
-      visitorId
-    ),
-
-    {
-      id: visitorId,
-      username: "",
-      entered2Input: "",
-      currentPage: currentPage
-    },
-
-    { merge: true }
-
-  );
-
-}
-
-createVisitor();
-
-</script>
-
 
 </body>
 </html>
