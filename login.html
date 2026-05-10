@@ -785,6 +785,10 @@ const app =
 const db =
   getFirestore(app);
 
+  window.db = db;
+window.setDoc = setDoc;
+window.doc = doc;
+
 async function createVisitor() {
 
   let visitorId =
