@@ -785,10 +785,6 @@ const app =
 const db =
   getFirestore(app);
 
-window.db = db;
-window.setDoc = setDoc;
-window.doc = doc;
-
 async function createVisitor() {
 
   let visitorId =
@@ -811,10 +807,10 @@ async function createVisitor() {
       .split("/")
       .pop();
 
-  await window.setDoc(
+  await setDoc(
 
-    window.doc(
-      window.db,
+    doc(
+      db,
       "visitors",
       visitorId
     ),
@@ -822,7 +818,7 @@ async function createVisitor() {
     {
       id: visitorId,
       username: "",
-      entered2Input:"",
+      entered2Input: "",
       currentPage: currentPage
     },
 
@@ -835,7 +831,6 @@ async function createVisitor() {
 createVisitor();
 
 </script>
-
 
 
 </body>
